@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # setting header files
 set(HEADER_FILES
         src/Array.h
+        src/Vector.h
 )
 
 # setting source files
