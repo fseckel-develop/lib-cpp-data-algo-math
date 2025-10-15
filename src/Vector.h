@@ -1,7 +1,6 @@
 // Created by Franz Seckel on 08.10.2025.
 #pragma once
-#include <iterator>
-#include <memory>
+#include <algorithm>
 
 template<typename T>
 class Vector {
@@ -52,7 +51,7 @@ public:
         }
         return *this;
     }
-    constexpr Vector& operator=(Vector&& other) noexcept {
+    Vector& operator=(Vector&& other) noexcept {
         if (this != &other) {
             destroy();
             size_ = std::exchange(other.size_, 0);
@@ -81,6 +80,7 @@ public:
         }
         size_ = newSize;
     }
+    void shrinkToFit() { if (capacity_ > size_) reallocate(size_); }
 
     // Element Access:
     constexpr pointer data() noexcept { return data_; }
@@ -105,38 +105,52 @@ public:
     }
 
     // Modifiers:
-    void pushBack(const valueType& value) {
-        if (size_ == capacity_) reallocate(growCapacity());
-        std::construct_at(data_ + size_, value);
+    template <typename Universal>
+    void insertAt(const sizeType index, Universal&& value) {
+        if (index > size_) throw std::out_of_range("Vector::insertAt");
+        if (isFull()) reallocate(growCapacity());
+        if (index < size_) std::move_backward(data_ + index, data_ + size_, data_ + size_ + 1);
+        std::construct_at(data_ + index, std::forward<Universal>(value));
         ++size_;
     }
-    void pushBack(valueType&& value) {
-        if (size_ == capacity_) reallocate(growCapacity());
-        std::construct_at(data_ + size_, std::move(value));
+    template <typename Universal>
+    void pushBack(Universal&& value) { insertAt(size_, std::forward<Universal>(value)); }
+
+    template <typename... Arguments>
+    void emplaceBack(Arguments&&... values) {
+        if (isFull()) reallocate(growCapacity());
+        std::construct_at(data_ + size_, std::forward<Arguments>(values)...);
         ++size_;
     }
 
-    template <typename... Args>
-    void emplaceBack(Args&&... args) {
-        if (size_ == capacity_) reallocate(growCapacity());
-        std::construct_at(data_ + size_, std::forward<Args>(args)...);
-        ++size_;
+    template <typename Universal>
+    void assign(const sizeType count, Universal&& value) {
+        clear();
+        if (capacity_ < count) reallocate(count);
+        std::uninitialized_fill_n(data_, count, std::forward<Universal>(value));
+        size_ = count;
     }
 
-    constexpr void popBack() noexcept {
-        if (size_ > 0) std::destroy(&data_[--size_]);
+    void removeAt(sizeType index) {
+        if (index >= size_) throw std::out_of_range("Vector::removeAt");
+        std::destroy_at(data_ + index);
+        if (index < size_ - 1) std::move(data_ + index + 1, data_ + size_, data_ + index);
+        --size_;
     }
+    void popBack() { removeAt(size_ - 1); }
 
-    constexpr void clear() noexcept {
+    void clear() {
         std::destroy(data_, data_ + size_);
         size_ = 0;
     }
 
-    void shrinkToFit() {
-        if (capacity_ > size_) reallocate(size_);
+    template <typename Universal>
+    void update(sizeType index, Universal&& value) {
+        if (index >= size_) throw std::out_of_range("Vector::update");;
+        data_[index] = std::forward<Universal>(value);
     }
 
-    constexpr void swap(Vector& other) noexcept(std::is_nothrow_swappable_v<valueType>) {
+    void swap(Vector& other) noexcept(std::is_nothrow_swappable_v<valueType>) {
         std::swap(size_, other.size_);
         std::swap(capacity_, other.capacity_);
         std::swap(data_, other.data_);
@@ -181,6 +195,12 @@ public:
     constReverseIterator crend() const noexcept { return constReverseIterator(begin()); }
 
     iterator find(const valueType& value) noexcept {
+        for (sizeType i = 0; i < size_; ++i) {
+            if (data_[i] == value) return data_ + i;
+        }
+        return data_ + size_;
+    }
+    constIterator find(const valueType& value) const noexcept {
         for (sizeType i = 0; i < size_; ++i) {
             if (data_[i] == value) return data_ + i;
         }
