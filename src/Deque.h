@@ -1,6 +1,5 @@
 // Created by Franz Seckel on 12.10.2025.
 #pragma once
-#include <memory>
 #include <cassert>
 #include <algorithm>
 
@@ -67,16 +66,6 @@ public:
         other.blocks_ = nullptr;
         other.size_ = 0;
         return *this;
-    }
-
-    void swap(Deque& other) noexcept {
-        std::swap(blocks_, other.blocks_);
-        std::swap(blockCount_, other.blockCount_);
-        std::swap(startBlock_, other.startBlock_);
-        std::swap(startOffset_, other.startOffset_);
-        std::swap(endBlock_, other.endBlock_);
-        std::swap(endOffset_, other.endOffset_);
-        std::swap(size_, other.size_);
     }
 
     // Capacity:
@@ -161,6 +150,16 @@ public:
         startBlock_ = endBlock_ = blockCount_ / 2;
         startOffset_ = endOffset_ = 0;
         size_ = 0;
+    }
+
+    void swap(Deque& other) noexcept {
+        std::swap(blocks_, other.blocks_);
+        std::swap(blockCount_, other.blockCount_);
+        std::swap(startBlock_, other.startBlock_);
+        std::swap(startOffset_, other.startOffset_);
+        std::swap(endBlock_, other.endBlock_);
+        std::swap(endOffset_, other.endOffset_);
+        std::swap(size_, other.size_);
     }
 
     // Iterators:

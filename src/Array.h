@@ -3,7 +3,7 @@
 #include <iterator>
 #include <stdexcept>
 
-template<typename T, size_t S>
+template <typename T, size_t S>
 class Array {
 public:
     // Aliases:
@@ -35,9 +35,9 @@ public:
     constexpr Array& operator=(Array&& other) noexcept = default;
 
     // Capacity:
-    constexpr sizeType size() { return S; }     // NOLINT
-    constexpr sizeType maxSize() { return S; }  // NOLINT
-    constexpr bool isEmpty() { return S == 0; } // NOLINT
+    constexpr sizeType size() { return S; }    // NOLINT
+    constexpr sizeType maxSize() { return S; } // NOLINT
+    constexpr bool empty() { return S == 0; }  // NOLINT
 
     // Element Access:
     constexpr pointer data() noexcept { return data_; }

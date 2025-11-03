@@ -3,7 +3,7 @@
 #include <memory>
 #include <cassert>
 
-template<typename T>
+template <typename T>
 class DoubleList {
     struct Node {
         T data;
@@ -42,7 +42,7 @@ public:
 
     // Capacity:
     sizeType size() const noexcept { return size_; }
-    bool isEmpty() const noexcept { return size_ == 0; }
+    bool empty() const noexcept { return size_ == 0; }
 
     // Element Access:
     reference front() noexcept { return head_->data; }
@@ -147,9 +147,9 @@ public:
 
     // Comparison Operators:
     bool operator==(const DoubleList& other) const noexcept {
-        if (size_ != other->size_) return false;
+        if (size_ != other.size_) return false;
         const Node* currentNode = head_;
-        const Node* otherNode = other->head_;
+        const Node* otherNode = other.head_;
         while (currentNode && otherNode) {
             if (currentNode->data != otherNode->data) return false;
             currentNode = currentNode->next;
@@ -159,7 +159,7 @@ public:
     }
     bool operator<(const DoubleList& other) const noexcept {
         const Node* currentNode = head_;
-        const Node* otherNode = other->head_;
+        const Node* otherNode = other.head_;
         while (currentNode && otherNode) {
             if (currentNode->data < otherNode->data) return true;
             if (currentNode->data > otherNode->data) return false;

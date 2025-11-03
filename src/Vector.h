@@ -2,7 +2,7 @@
 #pragma once
 #include <algorithm>
 
-template<typename T>
+template <typename T>
 class Vector {
 public:
     // Aliases:
@@ -65,8 +65,8 @@ public:
     constexpr sizeType size() const noexcept { return size_; }
     constexpr sizeType capacity() const noexcept { return capacity_; }
 
-    constexpr bool isEmpty() const noexcept { return size_ == 0; }
-    constexpr bool isFull() const noexcept { return size_ == capacity_; }
+    constexpr bool empty() const noexcept { return size_ == 0; }
+    constexpr bool full() const noexcept { return size_ == capacity_; }
 
     void reserve(const sizeType newCapacity) {
         if (capacity_ < newCapacity) reallocate(newCapacity);
@@ -108,7 +108,7 @@ public:
     template <typename Universal>
     void insertAt(const sizeType index, Universal&& value) {
         if (index > size_) throw std::out_of_range("Vector::insertAt");
-        if (isFull()) reallocate(growCapacity());
+        if (full()) reallocate(growCapacity());
         if (index < size_) std::move_backward(data_ + index, data_ + size_, data_ + size_ + 1);
         std::construct_at(data_ + index, std::forward<Universal>(value));
         ++size_;
@@ -118,7 +118,7 @@ public:
 
     template <typename... Arguments>
     void emplaceBack(Arguments&&... values) {
-        if (isFull()) reallocate(growCapacity());
+        if (full()) reallocate(growCapacity());
         std::construct_at(data_ + size_, std::forward<Arguments>(values)...);
         ++size_;
     }
