@@ -10,6 +10,7 @@ set(HEADER_FILES
         src/Deque.h
         src/DoubleList.h
         src/Queue.h
+        src/SearchTree.h
         src/SingleList.h
         src/Stack.h
         src/Vector.h
