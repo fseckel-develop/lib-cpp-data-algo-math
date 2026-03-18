@@ -31,7 +31,7 @@ namespace fsd::core
 
         // Capacity:
         [[nodiscard]] sizeType size() const { return container_.size(); }
-        [[nodiscard]] bool empty() const { return container_.isEmpty(); }
+        [[nodiscard]] bool empty() const { return container_.empty(); }
 
         // Element Access:
         constReference top() const { return container_.back(); }

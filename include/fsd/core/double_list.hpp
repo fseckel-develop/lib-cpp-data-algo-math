@@ -130,7 +130,7 @@ namespace fsd::core
         void popBack() noexcept { removeAt(size_ - 1); }
 
         template <typename Universal>
-        void update(const sizeType index, Universal&& value) noexcept {
+        void update(const sizeType index, Universal&& value) {
             if (index >= size_)  throw std::out_of_range("DoubleList::update");
             getNodeAt(index)->data = std::forward<Universal>(value);
         }

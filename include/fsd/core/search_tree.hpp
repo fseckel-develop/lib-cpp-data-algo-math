@@ -8,11 +8,11 @@ namespace fsd::core
     class SearchTree final : public BinaryTree<T> {
     public:
         // Aliases:
-        using Node = BinaryTree<T>::Node;
-        using valueType = BinaryTree<T>::valueType;
-        using sizeType = BinaryTree<T>::sizeType;
-        using iterator = BinaryTree<T>::iterator;
-        using constIterator = BinaryTree<T>::constIterator;
+        using Node = typename BinaryTree<T>::Node;
+        using valueType = typename BinaryTree<T>::valueType;
+        using sizeType = typename BinaryTree<T>::sizeType;
+        using iterator = typename BinaryTree<T>::iterator;
+        using constIterator = typename BinaryTree<T>::constIterator;
         using BinaryTree<T>::root_;
         using BinaryTree<T>::size_;
 

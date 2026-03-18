@@ -28,14 +28,14 @@ namespace fsd::core
             for (const auto& value : initList) pushBack(value);
         }
         SingleList(const SingleList& other) { copyFrom(other); }
-        SingleList(SingleList&& other) noexcept { moveFrom(other); }
+        SingleList(SingleList&& other) noexcept { moveFrom(std::move(other)); }
 
         SingleList& operator=(const SingleList& other) {
             if (this != &other) copyFrom(other);
             return *this;
         }
         SingleList& operator=(SingleList&& other) noexcept {
-            if (this != &other) { clear(); moveFrom(other); }
+            if (this != &other) { clear(); moveFrom(std::move(other)); }
             return *this;
         }
 
@@ -96,7 +96,7 @@ namespace fsd::core
         template <typename Universal>
         void pushBack(Universal&& value) { insertAt(size_, std::forward<Universal>(value)); }
 
-        void removeAt(const sizeType index) noexcept {
+        void removeAt(const sizeType index) {
             if (index >= size_) throw std::out_of_range("SingleList::removeAt");
             if (index == 0) {
                 const Node* target = head_;
@@ -117,7 +117,7 @@ namespace fsd::core
         void popBack() noexcept { removeAt(size_ - 1); }
 
         template <typename Universal>
-        void update(const sizeType index, Universal&& value) noexcept {
+        void update(const sizeType index, Universal&& value) {
             if (index >= size_) throw std::out_of_range("SingleList::update");
             getNodeAt(index)->data = std::forward<Universal>(value);
         }
@@ -218,7 +218,7 @@ namespace fsd::core
 
         void copyFrom(const SingleList& other) {
             clear();
-            for (const auto& value : other) { insertLast(value); }
+            for (const auto& value : other) { pushBack(value); }
         }
 
         void moveFrom(SingleList&& other) noexcept {

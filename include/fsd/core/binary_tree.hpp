@@ -8,6 +8,7 @@ namespace fsd::core
 {
     template <typename T>
     class BinaryTree {
+    protected:
         struct Node {
             T data;
             Node* left = nullptr;
@@ -26,8 +27,9 @@ namespace fsd::core
             if (other.root_) root_ = copySubtree(other.root_);
             size_ = other.size_;
         }
-        BinaryTree(BinaryTree&& other) noexcept : root_(other.root_) {
-            other.root_ = nullptr;
+        BinaryTree(BinaryTree&& other) noexcept :
+            root_(std::exchange(other.root_, nullptr)),
+            size_(std::exchange(other.size_, 0)) {
         }
         BinaryTree& operator=(const BinaryTree& other) {
             if (this == &other) return *this;
@@ -40,8 +42,8 @@ namespace fsd::core
         BinaryTree& operator=(BinaryTree&& other) noexcept {
             if (this == &other) return *this;
             clearSubtree(root_);
-            root_ = other.root_;
-            other.root_ = nullptr;
+            root_ = std::exchange(other.root_, nullptr);
+            size_ = std::exchange(other.size_, 0);
             return *this;
         }
         virtual ~BinaryTree() { clear(); }
@@ -57,36 +59,36 @@ namespace fsd::core
             ++size_;
             if (!root_) { root_ = newNode; return; }
             Queue<Node*> queue;
-            queue.push(root_);
+            queue.enqueue(root_);
             while (!queue.empty()) {
                 Node* currentNode = queue.front();
-                queue.pop();
+                queue.dequeue();
                 if (!currentNode->left) { currentNode->left = newNode; return; }
-                queue.push(currentNode->left);
+                queue.enqueue(currentNode->left);
                 if (!currentNode->right) { currentNode->right = newNode; return; }
-                queue.push(currentNode->right);
+                queue.enqueue(currentNode->right);
             }
         }
 
         virtual void remove(const valueType& value) {
             if (!root_) return;
             Queue<Node*> queue;
-            queue.push(root_);
+            queue.enqueue(root_);
             Node* target = nullptr;
             Node* lastNode = nullptr;
             Node* parentOfLast = nullptr;
             while (!queue.empty()) {
                 Node* currentNode = queue.front();
-                queue.pop();
+                queue.dequeue();
                 if (currentNode->data == value)
                     target = currentNode;
                 if (currentNode->left) {
                     parentOfLast = currentNode;
-                    queue.push(currentNode->left);
+                    queue.enqueue(currentNode->left);
                 }
                 if (currentNode->right) {
                     parentOfLast = currentNode;
-                    queue.push(currentNode->right);
+                    queue.enqueue(currentNode->right);
                 }
                 lastNode = currentNode;
             }
@@ -131,13 +133,13 @@ namespace fsd::core
             Vector<valueType> result;
             if (!root_) return result;
             Queue<Node*> queue;
-            queue.push(root_);
+            queue.enqueue(root_);
             while (!queue.empty()) {
                 Node* currentNode = queue.front();
-                queue.pop();
+                queue.dequeue();
                 result.pushBack(currentNode->data);
-                if (currentNode->left) queue.push(currentNode->left);
-                if (currentNode->right) queue.push(currentNode->right);
+                if (currentNode->left) queue.enqueue(currentNode->left);
+                if (currentNode->right) queue.enqueue(currentNode->right);
             }
             return result;
         }

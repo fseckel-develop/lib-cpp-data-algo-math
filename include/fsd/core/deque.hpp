@@ -72,7 +72,7 @@ namespace fsd::core
 
         // Capacity:
         [[nodiscard]] sizeType size() const noexcept { return size_; }
-        [[nodiscard]] bool isEmpty() const noexcept { return size_ == 0; }
+        [[nodiscard]] bool empty() const noexcept { return size_ == 0; }
 
         // Element Access:
         reference front() noexcept { return blocks_[startBlock_][startOffset_]; }

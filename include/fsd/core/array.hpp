@@ -37,9 +37,9 @@ namespace fsd::core
         constexpr Array& operator=(Array&& other) noexcept = default;
 
         // Capacity:
-        constexpr sizeType size() { return S; }    // NOLINT
-        constexpr sizeType maxSize() { return S; } // NOLINT
-        constexpr bool empty() { return S == 0; }  // NOLINT
+        constexpr sizeType size() const noexcept { return S; }
+        constexpr sizeType maxSize() const noexcept { return S; }
+        constexpr bool empty() const noexcept { return S == 0; }
 
         // Element Access:
         constexpr pointer data() noexcept { return data_; }
