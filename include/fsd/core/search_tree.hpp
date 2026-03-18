@@ -32,6 +32,8 @@ namespace fsd::core
         bool search(const valueType& value) const override {
             return searchInSubtree(root_, value);
         }
+        // NOTE(fsd): This returns a traversal iterator, not a true node iterator.
+        // See iterator TODO in BinaryTree.
         iterator find(const valueType& value) noexcept {
             Node* currentNode = root_;
             while (currentNode) {
@@ -41,6 +43,8 @@ namespace fsd::core
             }
             return this->end();
         }
+        // NOTE(fsd): This returns a traversal iterator, not a true node iterator.
+        // See iterator TODO in BinaryTree.
         constIterator find(const valueType& value) const noexcept {
             Node* currentNode = root_;
             while (currentNode) {
@@ -64,6 +68,8 @@ namespace fsd::core
             return node->data;
         }
 
+        // NOTE(fsd): This returns a traversal iterator, not a true node iterator.
+        // See iterator TODO in BinaryTree.
         iterator lowerBound(const valueType& value) noexcept {
             Node* current = root_;
             Node* candidate = nullptr;
@@ -76,6 +82,8 @@ namespace fsd::core
             }
             return candidate ? iterator(candidate) : this->end();
         }
+        // NOTE(fsd): This returns a traversal iterator, not a true node iterator.
+        // See iterator TODO in BinaryTree.
         iterator upperBound(const valueType& value) noexcept {
             Node* current = root_;
             Node* candidate = nullptr;

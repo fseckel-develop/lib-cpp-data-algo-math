@@ -45,6 +45,7 @@ namespace fsd::core
         }
 
         ~Deque() {
+            if (!blocks_) return;
             for (sizeType i = 0; i < blockCount_; i++) delete[] blocks_[i];
             delete[] blocks_;
         }
@@ -75,11 +76,11 @@ namespace fsd::core
         [[nodiscard]] bool empty() const noexcept { return size_ == 0; }
 
         // Element Access:
-        reference front() noexcept { return blocks_[startBlock_][startOffset_]; }
-        constReference front() const noexcept { return blocks_[startBlock_][startOffset_]; }
+        reference front() noexcept { return (*this)[0]; }
+        constReference front() const noexcept { return (*this)[0]; }
 
-        reference back() noexcept { return blocks_[endBlock_][endOffset_ - 1]; }
-        constReference back() const noexcept { return blocks_[endBlock_][endOffset_ - 1]; }
+        reference back() noexcept { return (*this)[size_ - 1]; }
+        constReference back() const noexcept { return (*this)[size_ - 1]; }
 
         reference operator[](const sizeType index) {
             assert(index < size_ && "Deque::operator[] index out of range");
@@ -166,11 +167,17 @@ namespace fsd::core
 
         // Iterators:
         class iterator {
-            pointer* blocks_ = nullptr;
+            Deque::pointer* blocks_ = nullptr;
             sizeType blockIndex_ = 0;
             sizeType offset_ = 0;
         public:
-            iterator(const pointer* blocks, const sizeType blockIndex, const sizeType offset) :
+            using iterator_category = std::bidirectional_iterator_tag;
+            using value_type = valueType;
+            using difference_type = std::ptrdiff_t;
+            using pointer = const valueType*;
+            using reference = const valueType&;
+
+            iterator(Deque::pointer* blocks, const sizeType blockIndex, const sizeType offset) :
                 blocks_(blocks), blockIndex_(blockIndex), offset_(offset) {
             }
             reference operator*() const noexcept { return blocks_[blockIndex_][offset_]; }
@@ -194,11 +201,17 @@ namespace fsd::core
         };
 
         class constIterator {
-            const pointer* blocks_ = nullptr;
+            const Deque::pointer* blocks_ = nullptr;
             sizeType blockIndex_ = 0;
             sizeType offset_ = 0;
         public:
-            constIterator(const pointer* blocks, const sizeType blockIndex, const sizeType offset) noexcept
+            using iterator_category = std::bidirectional_iterator_tag;
+            using value_type = valueType;
+            using difference_type = std::ptrdiff_t;
+            using pointer = const valueType*;
+            using reference = const valueType&;
+
+            constIterator(const Deque::pointer* blocks, const sizeType blockIndex, const sizeType offset) noexcept
                 : blocks_(blocks), blockIndex_(blockIndex), offset_(offset) {
             }
             constReference operator*() const noexcept { return blocks_[blockIndex_][offset_]; }

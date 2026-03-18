@@ -2,6 +2,7 @@
 
 ![Language](https://img.shields.io/badge/Language-C%2B%2B%2020-orange)
 ![CMake](https://img.shields.io/badge/Build-CMake%203.25+-blue)
+![Tests](https://img.shields.io/badge/Tests-doctest-green)
 ![Status](https://img.shields.io/badge/Status-Active%20Development-yellow)
 ![Platform](https://img.shields.io/badge/Platform-cross--platform-lightgrey)
 
@@ -165,7 +166,39 @@ Design principles:
 
 A key design goal is to separate concepts across domains — for example, a mathematical vector and a dynamic array are treated as distinct abstractions.
 
-A key design goal is to keep different concepts separated even when names overlap. For example, a mathematical vector and a dynamic array belong to different domains and should be treated as such in the code structure and namespace design.
+---
+## 🧪 Testing
+
+The project uses a lightweight test setup based on **`doctest`**.
+
+Build tests:
+```shell
+cmake -S . -B build -DFSD_BUILD_TESTS=ON
+cmake --build build
+```
+
+Run tests via `ctest`:
+```shell
+ctest --test-dir build
+# OR
+ctest --test-dir build -V    # verbose output (shows individual test cases)
+```
+
+Run tests via `fsd-tests` executable:
+```shell
+./build/tests/fsd-tests
+# OR
+./build/tests/fsd-tests -s                  # show all test cases
+# OR
+./build/tests/fsd-tests -tc="Vector*"       # run only tests matching "Vector"
+# OR
+./build/tests/fsd-tests --list-test-cases   # list all test cases
+```
+
+Notes:
+- Tests are located in the `tests/` directory
+- Test cases are grouped by module (e.g. `core/`, `math/`)
+- Doctest supports filtering, tagging, and fine-grained execution
 
 ---
 ## 🎯 Purpose

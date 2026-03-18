@@ -145,6 +145,21 @@ namespace fsd::core
         }
 
         // Iterators:
+        // TODO(fsd): Iterator design limitation
+        // The current iterator is implemented as an inorder traversal iterator
+        // initialized via pushLeft(root). This means:
+        //   iterator(node) does NOT point to 'node',
+        //   but instead to the leftmost node of the subtree rooted at 'node'.
+        // As a consequence:
+        // - find(), lowerBound(), upperBound() do not return correct iterators
+        //   (they return traversal iterators starting from a subtree root)
+        // Proper fix (future):
+        // - Redesign iterator to represent a position at a specific node
+        // - Likely requires parent pointers in Node
+        // - Implement successor-based increment (inorder successor)
+        // Until then:
+        // - Iterator is only reliable for begin()/end() traversal
+        // - Do not rely on iterator-returning lookup functions for correctness
         class iterator {
         public:
             using valueType = T;

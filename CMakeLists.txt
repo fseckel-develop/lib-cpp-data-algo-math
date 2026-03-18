@@ -9,7 +9,7 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 option(FSD_BUILD_EXAMPLES "Build fsd-cpp examples" ON)
-option(FSD_BUILD_TESTS "Build fsd-cpp tests" OFF)
+option(FSD_BUILD_TESTS "Build fsd-cpp tests" ON)
 
 add_library(fsd INTERFACE)
 add_library(fsd::fsd ALIAS fsd)
@@ -20,6 +20,11 @@ target_include_directories(fsd
         INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+add_library(doctest INTERFACE)
+target_include_directories(doctest INTERFACE
+        ${PROJECT_SOURCE_DIR}/external/doctest
 )
 
 if (MSVC)
@@ -55,6 +60,11 @@ endif()
 if (FSD_BUILD_EXAMPLES)
     add_executable(fsd-example examples/main.cpp)
     target_link_libraries(fsd-example PRIVATE fsd::fsd)
+endif()
+
+if (FSD_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
 
 install(TARGETS fsd
